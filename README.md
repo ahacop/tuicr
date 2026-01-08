@@ -2,6 +2,8 @@
 
 Review AI-generated diffs like a GitHub pull request, right from your terminal.
 
+![demo](./public/tuicr-demo.gif)
+
 ## Why I built this
 
 I use Claude a lot but there's no middle ground between "review every change"
