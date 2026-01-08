@@ -20,7 +20,7 @@ use ratatui::{Terminal, backend::CrosstermBackend};
 use app::App;
 use input::{Action, map_key_to_action};
 use model::CommentType;
-use output::export_to_markdown;
+use output::export_to_clipboard;
 use persistence::save_session;
 
 fn main() -> anyhow::Result<()> {
@@ -156,9 +156,9 @@ fn main() -> anyhow::Result<()> {
                                         app.set_message(format!("Save failed: {}", e));
                                     }
                                 },
-                                "e" | "export" => match export_to_markdown(&app.session) {
-                                    Ok(path) => {
-                                        app.set_message(format!("Exported to {}", path.display()));
+                                "e" | "export" => match export_to_clipboard(&app.session) {
+                                    Ok(()) => {
+                                        app.set_message("Review copied to clipboard");
                                     }
                                     Err(e) => {
                                         app.set_message(format!("Export failed: {}", e));

@@ -1,31 +1,21 @@
 use std::fmt::Write;
-use std::fs;
-use std::path::PathBuf;
 
-use crate::error::Result;
+use arboard::Clipboard;
+
+use crate::error::{Result, TuicrError};
 use crate::model::{CommentType, ReviewSession};
 
-pub fn export_to_markdown(session: &ReviewSession) -> Result<PathBuf> {
+pub fn export_to_clipboard(session: &ReviewSession) -> Result<()> {
     let content = generate_markdown(session);
 
-    let repo_name = session
-        .repo_path
-        .file_name()
-        .and_then(|n| n.to_str())
-        .unwrap_or("unknown");
+    let mut clipboard = Clipboard::new()
+        .map_err(|e| TuicrError::Clipboard(format!("Failed to access clipboard: {}", e)))?;
 
-    let short_commit = if session.base_commit.len() >= 7 {
-        &session.base_commit[..7]
-    } else {
-        &session.base_commit
-    };
+    clipboard
+        .set_text(content)
+        .map_err(|e| TuicrError::Clipboard(format!("Failed to copy to clipboard: {}", e)))?;
 
-    let filename = format!("review_{}_{}.md", repo_name, short_commit);
-    let path = session.repo_path.join(&filename);
-
-    fs::write(&path, content)?;
-
-    Ok(path)
+    Ok(())
 }
 
 fn generate_markdown(session: &ReviewSession) -> String {

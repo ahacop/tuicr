@@ -25,6 +25,9 @@ pub enum TuicrError {
 
     #[error("Session not found: {0}")]
     SessionNotFound(String),
+
+    #[error("Clipboard error: {0}")]
+    Clipboard(String),
 }
 
 pub type Result<T> = std::result::Result<T, TuicrError>;
